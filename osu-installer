@@ -1,0 +1,141 @@
+
+#!/bin/bash
+MY_PATH="`dirname \"$0\"`"
+cd "$MY_PATH"
+HEIGHT=15
+WIDTH=40
+CHOICE_HEIGHT=4
+BACKTITLE="Creado por: Elsoberanox - https://www.youtube.com/c/ElsoberanoxLinux"
+TITLE="www.juegosenlinux.site"
+MENU="OSU - Elsoberanox"
+
+OPTIONS=(1 "Instalar OSU"
+         2 "Desinstalar"
+         3 "Ver mas ports"
+         4 "Salir")
+
+CHOICE=$(dialog --clear \
+                --backtitle "$BACKTITLE" \
+                --title "$TITLE" \
+                --menu "$MENU" \
+                $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                "${OPTIONS[@]}" \
+                2>&1 >/dev/tty)
+
+clear
+case $CHOICE in
+        1)
+
+MY_PATH="`dirname \"$0\"`"
+cd "$MY_PATH"
+
+DIRECTORIO=/opt/wineson
+wget=/usr/bin/wget
+dialog=/usr/bin/dialog
+badown=/usr/bin/badown
+winetricks=/usr/bin/winetricks
+juego=$HOME/Juegos/OSU
+
+
+
+if [ -d "$DIRECTORIO" ]
+then
+   echo "ya tienes wineson"
+else
+  wget https://archive.org/download/wineson.7z_202110/wineson.7z
+  7z x wineson.7z
+  sudo rm -R wineson.7z
+  sudo mv wineson /opt/
+fi
+
+
+if [ -d "$juego" ]
+then
+   echo "Directorio ya esta creado"
+else
+mkdir $HOME/Juegos/
+mkdir $HOME/Juegos/OSU
+fi
+
+
+
+if [ -f $wget ]
+then
+   echo "El fichero $wget existe"
+else
+   sudo apt install wget
+fi 
+
+
+if [ -f $dialog ]
+then
+   echo "El fichero $dialog existe"
+else
+   sudo apt install dialog
+fi 
+
+
+if [ -f $badown ]
+then
+   echo "El fichero $badown existe"
+else
+   wget https://archive.org/download/badown/badown 
+   sudo chmod +x badown
+   sudo mv badown /usr/bin/
+fi 
+
+
+if [ -f $p7zip ]
+then
+   echo "El fichero $p7zip existe"
+else
+   sudo apt install p7zip-full p7zip-rar
+fi 
+
+
+if [ -f $winetricks ]
+then
+   echo "El fichero $wientricks existe"
+else
+   wget https://archive.org/download/winetricks/winetricks
+   sudo chmod +x winetricks
+   sudo mv winetricks /usr/bin/
+fi 
+
+
+export WINEARCH=win32 WINEPREFIX=$HOME/Juegos/OSU
+export PATH=/opt/wineson/bin/:/usr/bin/:/opt/
+
+
+wget https://archive.org/download/osu_20210927_202109/osu.exe
+wget https://archive.org/download/winetricks/winetricks && sudo chmod +x winetricks && sudo mv winetricks /usr/bin/ 
+winetricks dotnet40 && clear
+echo -e "export WINEPREFIX=$HOME/Juegos/OSU\nexport PATH=/opt/wineson/bin/:/usr/bin/:/opt/\ncd $HOME/Juegos/OSU/drive_c/users/steamuser/AppData/Local/osu\!/\nwine osu\!.exe" >> osu-launcher
+sudo chmod +x osu-launcher && sudo mv osu-launcher /usr/bin/
+wget https://ia601408.us.archive.org/24/items/osu_20210928/osu.png && sudo mv osu.png /opt/
+echo -e "[Desktop Entry]\n Version=1.0\n Type=Application\n Name=OSU\n Comment=PortOsu-Linux\n Icon=/opt/osu.png\n Exec=osu-launcher\n Categories=Game;" >> OSU.desktop
+sudo chmod +x OSU.desktop
+sudo mv OSU.desktop $HOME/.local/share/applications
+xdg-desktop-menu forceupdate
+sleep 5
+
+wine osu.exe
+sudo rm -R osu.exe
+
+            ;;
+        2)
+sudo rm -R /usr/bin/osu-launcher
+sudo rm -R /opt/osu.png
+sudo rm -R $HOME/Juegos/OSU
+sudo rm -R $HOME/.local/share/applications/OSU.desktop
+xdg-desktop-menu forceupdate
+
+            ;;
+        3)
+            xdg-open https://www.juegosenlinux.site/
+            ;;
+            
+                    3)
+            exit
+            ;;
+esac
